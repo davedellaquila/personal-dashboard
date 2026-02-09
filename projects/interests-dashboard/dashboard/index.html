@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dave's Wellness Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-list li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .activity-list .emoji {
+            font-size: 1.5rem;
+        }
+        
+        .gratitude-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .food-log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .food-log h3 {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .food-log p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .checkmark {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background: #5568d3;
+        }
+        
+        .timestamp {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Dave's Wellness Dashboard</h1>
+            <p class="subtitle">Track your daily activities, gratitude, and wellness journey</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Summary Stats -->
+            <div class="card">
+                <h2>📊 Quick Stats</h2>
+                <div class="stat-grid">
+                    <div class="stat">
+                        <div class="stat-value" id="totalDays">0</div>
+                        <div class="stat-label">Days Tracked</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalActivities">0</div>
+                        <div class="stat-label">Activities Logged</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="gratitudeCount">0</div>
+                        <div class="stat-label">Gratitude Entries</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="currentStreak">1</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activities -->
+            <div class="card">
+                <h2>🎯 Activities This Week</h2>
+                <ul class="activity-list" id="activityList">
+                    <li class="empty-state">Loading activities...</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Today's Gratitude -->
+        <div class="card">
+            <h2>🙏 Recent Gratitude</h2>
+            <div id="gratitudeContainer">
+                <p class="empty-state">No gratitude entries yet. Check in tonight at 11 PM!</p>
+            </div>
+        </div>
+        
+        <!-- Food & Drink Log -->
+        <div class="card">
+            <h2>🍽️ Today's Consumption</h2>
+            <div id="foodContainer">
+                <p class="empty-state">Loading...</p>
+            </div>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <button class="refresh-btn" onclick="loadDashboard()">
+                🔄 Refresh Data
+            </button>
+            <p class="timestamp" id="lastUpdate"></p>
+        </div>
+    </div>
+    
+    <script>
+        // Parse journal markdown files
+        async function loadJournalData() {
+            const journalPath = '../journal/2026-01-30.md';
+            
+            try {
+                const response = await fetch(journalPath);
+                const text = await response.text();
+                return parseJournal(text);
+            } catch (error) {
+                console.error('Error loading journal:', error);
+                return null;
+            }
+        }
+        
+        function parseJournal(text) {
+            const data = {
+                gratitude: [],
+                happiness: [],
+                activities: {
+                    funCar: false,
+                    hotTub: false,
+                    walk: false,
+                    sex: false
+                },
+                food: [],
+                drinks: [],
+                energy: null,
+                notes: []
+            };
+            
+            const lines = text.split('\n');
+            let currentSection = null;
+            let inFood = false;
+            let inDrinks = false;
+            
+            for (let line of lines) {
+                line = line.trim();
+                
+                // Section detection
+                if (line.includes('## Gratitude')) currentSection = 'gratitude';
+                else if (line.includes('## What Made Me Happy')) currentSection = 'happiness';
+                else if (line.includes('## Activities')) currentSection = 'activities';
+                else if (line.includes('### Food')) { currentSection = 'food'; inFood = true; inDrinks = false; }
+                else if (line.includes('### Drinks')) { currentSection = 'drinks'; inDrinks = true; inFood = false; }
+                else if (line.includes('## Energy/Mood')) currentSection = 'energy';
+                
+                // Parse content
+                if (line.startsWith('- ') && currentSection === 'gratitude' && !line.includes('## ')) {
+                    const item = line.substring(2).trim();
+                    if (item) data.gratitude.push(item);
+                }
+                
+                if (line.startsWith('- ') && currentSection === 'happiness') {
+                    const item = line.substring(2).trim();
+                    if (item) data.happiness.push(item);
+                }
+                
+                if (currentSection === 'activities') {
+                    if (line.includes('[x]')) {
+                        if (line.includes('Fun car')) data.activities.funCar = true;
+                        if (line.includes('Hot tub')) data.activities.hotTub = true;
+                        if (line.includes('Walk')) data.activities.walk = true;
+                        if (line.includes('Sex')) data.activities.sex = true;
+                    }
+                }
+                
+                if (line.startsWith('- **') && inFood) {
+                    data.food.push(line.substring(2));
+                }
+                
+                if (line.startsWith('- **') && inDrinks) {
+                    data.drinks.push(line.substring(2));
+                }
+            }
+            
+            return data;
+        }
+        
+        function updateDashboard(data) {
+            if (!data) {
+                document.querySelectorAll('.empty-state').forEach(el => {
+                    el.textContent = 'Could not load journal data. Make sure you have journal entries!';
+                });
+                return;
+            }
+            
+            // Update stats
+            document.getElementById('totalDays').textContent = '1'; // For now, just today
+            
+            let activityCount = 0;
+            if (data.activities.funCar) activityCount++;
+            if (data.activities.hotTub) activityCount++;
+            if (data.activities.walk) activityCount++;
+            if (data.activities.sex) activityCount++;
+            document.getElementById('totalActivities').textContent = activityCount;
+            
+            document.getElementById('gratitudeCount').textContent = data.gratitude.length;
+            
+            // Update activities
+            const activityList = document.getElementById('activityList');
+            const activities = [];
+            
+            if (data.activities.sex) activities.push({ emoji: '❤️', label: 'Intimacy' });
+            if (data.activities.funCar) activities.push({ emoji: '🏎️', label: 'Fun car drive' });
+            if (data.activities.hotTub) activities.push({ emoji: '🛁', label: 'Hot tub' });
+            if (data.activities.walk) activities.push({ emoji: '🚶', label: 'Walk' });
+            
+            if (activities.length > 0) {
+                activityList.innerHTML = activities.map(a => 
+                    `<li><span class="emoji">${a.emoji}</span> ${a.label} <span class="checkmark">✓</span></li>`
+                ).join('');
+            } else {
+                activityList.innerHTML = '<li class="empty-state">No activities logged yet</li>';
+            }
+            
+            // Update gratitude
+            const gratitudeContainer = document.getElementById('gratitudeContainer');
+            if (data.gratitude.length > 0 || data.happiness.length > 0) {
+                let html = '';
+                data.gratitude.forEach(item => {
+                    html += `<div class="gratitude-item">🙏 ${item}</div>`;
+                });
+                data.happiness.forEach(item => {
+                    html += `<div class="gratitude-item">😊 ${item}</div>`;
+                });
+                gratitudeContainer.innerHTML = html;
+            } else {
+                gratitudeContainer.innerHTML = '<p class="empty-state">No gratitude entries yet. Check in tonight!</p>';
+            }
+            
+            // Update food/drinks
+            const foodContainer = document.getElementById('foodContainer');
+            let foodHtml = '';
+            
+            if (data.food.length > 0) {
+                foodHtml += '<div class="food-log"><h3>🍽️ Food</h3>';
+                data.food.forEach(item => {
+                    foodHtml += `<p>${item}</p>`;
+                });
+                foodHtml += '</div>';
+            }
+            
+            if (data.drinks.length > 0) {
+                foodHtml += '<div class="food-log"><h3>🍺 Drinks</h3>';
+                data.drinks.forEach(item => {
+                    foodHtml += `<p>${item}</p>`;
+                });
+                foodHtml += '</div>';
+            }
+            
+            if (foodHtml) {
+                foodContainer.innerHTML = foodHtml;
+            } else {
+                foodContainer.innerHTML = '<p class="empty-state">No food/drinks logged yet</p>';
+            }
+            
+            // Update timestamp
+            document.getElementById('lastUpdate').textContent = 
+                `Last updated: ${new Date().toLocaleString()}`;
+        }
+        
+        async function loadDashboard() {
+            const data = await loadJournalData();
+            updateDashboard(data);
+        }
+        
+        // Load on page load
+        loadDashboard();
+    </script>
+</body>
+</html>
