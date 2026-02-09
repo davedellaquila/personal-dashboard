@@ -164,6 +164,22 @@ Dave's information is fragmented across:
 - [ ] Direct Twitter links
 - [ ] Trending topics
 
+**Reddit Panel:**
+- [ ] Curated posts from configured subreddits
+- [ ] Edit subreddit list (add/remove/reorder)
+- [ ] Per-subreddit settings (upvote threshold, postsPerDay)
+- [ ] Filter by category (AI, UX, Business)
+- [ ] Mark as read
+- [ ] Direct Reddit links
+- [ ] Upvote/comment stats
+
+**Content Source Configuration:**
+- [ ] Settings panel for Twitter accounts to follow
+- [ ] Settings panel for Reddit subreddits
+- [ ] Adjust filters (engagement thresholds, time windows)
+- [ ] Enable/disable sources
+- [ ] Preview before saving
+
 **Enhanced Interests:**
 - [ ] Drag-and-drop reordering
 - [ ] Bulk operations
@@ -414,6 +430,44 @@ GET    /api/twitter/feed       # Filtered AI feed
 - Content area (scrollable if needed)
 - Status indicators (loading, error, empty states)
 - Consistent styling
+
+### Settings/Configuration UI
+
+**Content Source Configuration Panel:**
+
+Users should be able to easily manage content sources without editing JSON files.
+
+**Reddit Configuration:**
+- List of currently monitored subreddits (with drag-to-reorder)
+- Add new subreddit (search/autocomplete)
+- Remove subreddit (with confirmation)
+- Per-subreddit settings:
+  - Upvote threshold (slider or input)
+  - Posts per day (1-5)
+  - Category (AI, UX, Business, etc.)
+  - Priority (high/medium/low)
+- Global settings:
+  - Default upvote threshold
+  - Time window (24h, 48h, week)
+  - Diversity mode (on/off)
+- Preview button (show sample results before saving)
+- Save/Cancel actions
+
+**Twitter Configuration:**
+- List of currently followed accounts
+- Add new account (search/autocomplete)
+- Remove account
+- Predefined query management (ai, aiNews, aiDigest)
+- Engagement threshold settings
+- Time window settings
+
+**UI Pattern:**
+- Modal or side panel for settings
+- Inline editing where possible
+- Clear save/cancel actions
+- Real-time preview of changes
+- Validation feedback (invalid subreddit names, etc.)
+- Success/error notifications
 
 ### Design Requirements (for Pencil)
 
