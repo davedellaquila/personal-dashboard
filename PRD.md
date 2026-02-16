@@ -898,3 +898,156 @@ Hal notices new topic mentioned in conversation:
 **End of PRD v1.0**
 
 *Next: Dave feedback → Design mockup → Codex build*
+
+---
+
+## 13. Knowledge Base Panel (NEW)
+
+### Purpose
+Searchable knowledge base for all consumed content - podcasts, papers, articles, tweets, and notes. Inspired by Rae Assist's free-form personal information manager.
+
+### Content Sources
+- **Podcast transcripts** (via Whisper API)
+- **arXiv papers** (AI/ML research monitoring)
+- **Twitter threads** (curated high-quality accounts)
+- **Reddit discussions** (saved/interesting posts)
+- **Web articles** (via web_fetch or browser)
+- **Personal notes** (quick captures)
+
+### Core Features
+
+#### 13.1 Search Interface
+- **Full-text search** across all content
+- **Semantic search** (find related concepts, not just keywords)
+- **Filter by:**
+  - Source type (podcast, paper, article, note)
+  - Date range
+  - Topic/tag
+  - Author/speaker
+
+#### 13.2 Content Display
+- **Timeline view** - Chronological discovery
+- **Graph view** - Connections between ideas
+- **Topic clusters** - Visual map of knowledge domains
+- **Recent additions** - Last 7 days
+
+#### 13.3 Smart Features
+- **Auto-extraction** of key insights (AI-powered)
+- **Auto-tagging** by topic/category
+- **Link detection** between related content
+- **Resurface algorithm** - Brings up forgotten insights from 30+ days ago
+
+#### 13.4 Capture & Input
+- **Quick capture** - Add note/thought/link instantly
+- **Browser extension** - Save articles while reading
+- **Voice memo integration** - Transcribe and store
+- **Email forwarding** - forward@dashboard → stored
+
+### Data Model
+
+```typescript
+interface KnowledgeItem {
+  id: string;
+  type: 'podcast' | 'paper' | 'article' | 'tweet' | 'note';
+  title: string;
+  content: string; // Full text or transcript
+  summary: string; // AI-generated
+  insights: string[]; // Extracted key points
+  source: {
+    url?: string;
+    author?: string;
+    date: Date;
+  };
+  tags: string[];
+  relatedItems: string[]; // IDs of related content
+  embedding?: number[]; // For semantic search
+  createdAt: Date;
+  lastAccessedAt: Date;
+}
+```
+
+### Storage Architecture
+
+**Hybrid Approach:**
+1. **Local files** in `~/clawd/knowledge/`
+   - Markdown format (human-readable + greppable)
+   - One file per item
+   - Metadata in YAML frontmatter
+
+2. **Vector database** for semantic search
+   - OpenAI embeddings or local model
+   - Fast similarity search
+
+3. **Notion sync** (optional)
+   - Curated highlights
+   - Mobile access
+
+### UI Layout
+
+```
+┌─────────────────────────────────────────────┐
+│ 🔍 Search knowledge base...                │
+├─────────────────────────────────────────────┤
+│ Recent Additions (Last 7 days)              │
+│ ┌───────────────────────────────────────┐   │
+│ │ 📄 AppStories 470 - AI & Apps         │   │
+│ │ 💡 Key: Software abundance era        │   │
+│ └───────────────────────────────────────┘   │
+│ ┌───────────────────────────────────────┐   │
+│ │ 📑 arXiv: LLM Reasoning Paper         │   │
+│ │ 💡 Key: Chain-of-thought prompting    │   │
+│ └───────────────────────────────────────┘   │
+├─────────────────────────────────────────────┤
+│ Resurface from 2 months ago:                │
+│ 📌 "Vibe coding" concept - Feb 2026         │
+├─────────────────────────────────────────────┤
+│ Topic Clusters:                             │
+│ [AI Development] [UX Design] [Automation]   │
+│ [Photography] [Vintage Cars] [Cycling]      │
+└─────────────────────────────────────────────┘
+```
+
+### Implementation Phases
+
+**Phase 1: Foundation**
+- Set up `~/clawd/knowledge/` directory structure
+- Podcast transcription workflow (✓ complete)
+- Basic file storage + search
+
+**Phase 2: Smart Features**
+- Generate embeddings for semantic search
+- Auto-extract insights (AI-powered)
+- Auto-tagging system
+
+**Phase 3: UI Integration**
+- Dashboard panel design
+- Search interface
+- Timeline + graph views
+
+**Phase 4: Advanced**
+- Resurface algorithm
+- Browser extension
+- Mobile capture app
+
+### Success Metrics
+- **Retrieval speed:** Find any piece of content in <30 seconds
+- **Capture friction:** Add new item in <10 seconds
+- **Serendipity:** Discover unexpected connections weekly
+- **Usage:** Reference knowledge base 3+ times per day
+
+### Rae Assist Connection
+This feature builds on concepts from Dave's original Rae Assist product:
+- Free-form information capture
+- Powerful search/retrieval
+- Relationship mapping
+- Mobile-friendly design
+
+**To be explored with Dave:**
+- Specific UX patterns from Rae Assist
+- What worked well vs. what didn't
+- Modern improvements with AI/cloud
+
+---
+
+**Version:** 2.1 (Knowledge Base Panel Added)  
+**Last Updated:** February 9, 2026
